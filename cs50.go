@@ -4,20 +4,8 @@ import (
 	"fmt"
 	"bufio"
 	"os"
+	"strconv"
 )
-
-// Constants used to define Max and Min value of unsigned int
-const MaxUint = ^uint(0)
-const MinUint = 0
-
-// Constants used to define Max and Min value of signed int
-const MaxInt = int(^uint(0) >> 1)
-const MinInt = -MaxInt - 1
-
-func Hello() {
-	fmt.Println("Hello, world!")
-}
-
 
 /**
  * Prompts user for a line of text from standard input and returns
@@ -65,7 +53,6 @@ func GetString(format string, a ...interface{}) string {
 	}	
 }
 
-
 /**
  * Prompts user for a line of text from standard input and returns the
  * equivalent char; if text is not a single char, user is prompted
@@ -77,7 +64,8 @@ func GetString(format string, a ...interface{}) string {
 	input := ""
 
 	// keep prompting user until he inputs a single character
-	for len(input) > 1 || input == "" {
+	for input == "" || len(input) > 1 {
+		// get input string from command line
 		input = GetString(format, a...)
 	}
 
@@ -88,19 +76,46 @@ func GetString(format string, a ...interface{}) string {
 /**
  * Prompts user for a line of text from standard input and returns the
  * equivalent int; if text does not represent an int in [-2^31, 2^31 - 1)
- * or would cause underflow or overflow, user is prompted to retry. If line
- * can't be read, returns INT_MAX.
+ * or would cause underflow or overflow, user is prompted to retry.
  */
-func GetInt(format string, a ...interface{}) {
-	fmt.Fprintf(os.Stdout, format, a)
+func GetInt(format string, a ...interface{}) int {
+
+	// keep prompting user until he inputs a single character
+	for {
+
+		// get input string from command line
+		input := GetString(format, a...)
+
+		// convert string to int
+		i, err := strconv.Atoi(input)
+
+		// on successful conversion return integer value
+		if err == nil {
+			return i
+		}
+	}
 }
 
 /**
  * Prompts user for a line of text from standard input and returns the
- * equivalent unsigned int; if text does not represent an int in [-2^31, 2^31 - 1)
- * or would cause underflow or overflow, user is prompted to retry. If line
- * can't be read, returns INT_MAX.
+ * equivalent float as precisely as possible; if text does not represent
+ * a float or if value would cause underflow or overflow, user is prompted
+ * to retry.
  */
-func GetUint() {
-	fmt.Println(MaxInt)
+func GetFloat(format string, a ...interface{}) float64 {
+
+	// keep prompting user until he inputs a single character
+	for {
+
+		// get input string from command line
+		input := GetString(format, a...)
+
+		// convert string to float
+		i, err := strconv.ParseFloat(input, 64)
+
+		// on successful conversion return float value
+		if err == nil {
+			return i
+		}
+	}
 }
